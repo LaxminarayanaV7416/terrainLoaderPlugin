@@ -4,11 +4,18 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 # Project name
 project(gazebo_terrain_loader)
 
-# Set the C++ standard to C++20
-set (CMAKE_CXX_STANDARD 20)
+# Set c11
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+
+# find_package(ignition-math3 REQUIRED)
+# include_directories(${IGNITION_MATH_INCLUDE_DIRS})
 
 # adding gazebo package
 find_package(gazebo REQUIRED)
+include_directories(${GAZEBO_INCLUDE_DIRS})
 
 # Add the library (shared object)
 add_library(gazebo_terrain_loader_plugin SHARED gazeboTerrainLoader/src/gazebo_terrain_loader.cpp)
