@@ -3,7 +3,7 @@ export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:${SRC_DIR}/Tools/simulation/gazebo-c
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${BUILD_DIR}/build_gazebo-classic
 
 export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/home/uav/Documents/terrainLoaderPlugin/build/lib
-export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/uav/Documents/terrainLoaderPlugin
+export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/uav/Documents/terrainLoaderPlugin/models
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/uav/Documents/terrainLoaderPlugin/build/lib
 
 gzserver /home/uav/Documents/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/worlds/empty.world --verbose

@@ -8,6 +8,8 @@ namespace gazebo {
       public:
         SubscriberGazeboPlugin() : WorldPlugin() {
             printf("Subscriber Plugin Created!\n");
+            // model to use
+            this->msg.set_sdf_filename("model://terrainLoaderBlock");
         }
 
       public:
@@ -53,7 +55,13 @@ namespace gazebo {
                   double x = _msg->pose(i).position().x();
                   double y = _msg->pose(i).position().y();
                   double z = _msg->pose(i).position().z();
-                  this->bringUpStaticBlockof1Meter(x,y,z);
+
+                  int int_x = (int)x;
+                  int int_y = (int)y;
+                  int int_z = (int)z;
+
+                  //before spawning check whether the spawned block is already part of the 
+                  this->bringUpStaticBlockof1Meter(int_x,int_y,int_z);
               }
             }
 
@@ -62,19 +70,13 @@ namespace gazebo {
         }
 
       public:
-        void bringUpStaticBlockof1Meter(double& x_position, double& y_position, double& z_position)
+        void bringUpStaticBlockof1Meter(int& x_position, int& y_position, int& z_position)
         {
-            // create msg obj
-            msgs::Factory msg;
-
-            // model to use
-            msg.set_sdf_filename("model://terrainLoaderBlock");
-
             // set model pose
-            msgs::Set(msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0.0, 0.0, 0.0, 0.0));
+            msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
 
             // Send the message
-            this->publisher->Publish(msg);
+            this->publisher->Publish(this->msg);
 
             std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
 
@@ -84,6 +86,9 @@ namespace gazebo {
      // reather than declaring them as local varibales which may cause issues
     private:
         transport::SubscriberPtr sub;
+
+        // create msg obj
+        msgs::Factory msg;
 
     private:
         transport::PublisherPtr publisher;
