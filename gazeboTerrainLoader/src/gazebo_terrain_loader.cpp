@@ -4,17 +4,17 @@
 #include <time.h>
 
 namespace gazebo {
-    class SubscriberGazeboPlugin : public ModelPlugin {
+    class SubscriberGazeboPlugin : public WorldPlugin {
       public:
-        SubscriberGazeboPlugin() : ModelPlugin() {
+        SubscriberGazeboPlugin() : WorldPlugin() {
             printf("Subscriber Plugin Created!\n");
         }
 
       public:
-        void Load(physics::ModelPtr _model, sdf::ElementPtr _sdf) {
+        void Load(physics::WorldPtr _model, sdf::ElementPtr _sdf) {
             
             // using _model pointer & GetName()to get model name
-            std::cout << "World Name = " << _model->GetName() << std::endl;
+            std::cout << "World Name = " << _model-> Name() << std::endl;
 
             // set a node to subscribe
             transport::NodePtr node(new transport::Node());
@@ -93,5 +93,5 @@ namespace gazebo {
 
     };
     // Register plugin 
-    GZ_REGISTER_MODEL_PLUGIN(SubscriberGazeboPlugin)
+    GZ_REGISTER_WORLD_PLUGIN(SubscriberGazeboPlugin)
 }
