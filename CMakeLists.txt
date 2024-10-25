@@ -21,8 +21,13 @@ file(GLOB SOURCES
 find_package(gazebo REQUIRED)
 include_directories(${GAZEBO_INCLUDE_DIRS})
 
+# find_package(LibXml2 REQUIRED)
+# include_directories(${LIBXML2_INCLUDE_DIRS})
+
 # Add the library (shared object)
 add_library(gazebo_terrain_loader_plugin SHARED ${SOURCES})
+
+# target_link_libraries(gazebo_terrain_loader_plugin ${GAZEBO_INCLUDE_DIRS} ${LIBXML2_LIBRARIES})
 
 # Set output directory for libraries
 set_target_properties(gazebo_terrain_loader_plugin PROPERTIES

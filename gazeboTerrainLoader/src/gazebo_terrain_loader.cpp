@@ -8,7 +8,7 @@ namespace gazebo
     printf("Subscriber Plugin Created!\n");
     // model to use
     this->msg.set_sdf_filename("model://terrainLoaderBlock");
-    this->transport_node = NULL;
+      this->transport_node = NULL;
   }
 
   GazeboTerrainLoaderPlugin::~GazeboTerrainLoaderPlugin()
@@ -18,7 +18,7 @@ namespace gazebo
 
   void GazeboTerrainLoaderPlugin::Load(physics::WorldPtr _model, sdf::ElementPtr _sdf)
   {
-
+    this->world = _model;
     // using _model pointer & GetName()to get model name
     std::cout << "World Name = " << _model->Name() << std::endl;
 
@@ -78,6 +78,11 @@ namespace gazebo
   {
     // set model pose
     msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
+
+    // // update the string to set the size and pose
+    // std::string temporaryModelSDF = this->updateSDF(std::string(this->MODEL_SDF_STRING), x_position, y_position, z_position);
+    // this->modelSDF.SetFromString(temporaryModelSDF);
+    // this->world->InsertModelSDF(this->modelSDF);
 
     // Send the message
     this->publisher->Publish(this->msg);
