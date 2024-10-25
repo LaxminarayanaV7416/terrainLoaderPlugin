@@ -40,33 +40,38 @@ namespace gazebo
     // execute for every second
     time_t tempSeconds = time(NULL);
 
-    if (tempSeconds > this->seconds)
+    for (int i = 0; i < _msg->pose_size(); i++)
     {
-      this->seconds = tempSeconds;
+      std::string msg_name = _msg->pose(i).name();
 
-      for (int i = 0; i < _msg->pose_size(); i++)
+      // this is the drone pose
+      if (msg_name.find("::") == std::string::npos)
       {
-        std::string msg_name = _msg->pose(i).name();
+        double x = _msg->pose(i).position().x();
+        double y = _msg->pose(i).position().y();
+        double z = _msg->pose(i).position().z();
 
-        // this is the drone pose
-        if (msg_name.find("::") == std::string::npos)
+        int int_x = (int)x;
+        int int_y = (int)y;
+
+        // before spawning check whether the spawned block is already part of the already spawned block
+        if (this->already_spawned_blocks_map.find({int_x, int_y}) == this->already_spawned_blocks_map.end())
         {
-          double x = _msg->pose(i).position().x();
-          double y = _msg->pose(i).position().y();
-          double z = _msg->pose(i).position().z();
-
-          int int_x = (int)x;
-          int int_y = (int)y;
-          int int_z = (int)z;
-
-          // before spawning check whether the spawned block is already part of the
-          this->bringUpStaticBlockof1Meter(int_x, int_y, int_z);
+          this->bringUpStaticBlockof1Meter(int_x, int_y, z);
+        }
+        else
+        {
+          if (tempSeconds > this->seconds)
+          {
+            this->seconds = tempSeconds;
+            std::cout << "Already Spawned so not showing again" << std::endl;
+          }
         }
       }
     }
   }
 
-  void GazeboTerrainLoaderPlugin::bringUpStaticBlockof1Meter(int &x_position, int &y_position, int &z_position)
+  void GazeboTerrainLoaderPlugin::bringUpStaticBlockof1Meter(int &x_position, int &y_position, double &z_position)
   {
     // set model pose
     msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
@@ -75,6 +80,10 @@ namespace gazebo
     this->publisher->Publish(this->msg);
 
     std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
+
+    // add the already spawned block here
+    this->already_spawned_blocks_map[{x_position, y_position}] = z_position;
+    std::cout << "Added the already spawned block with key " << x_position << "," << y_position << std::endl;
   }
 
   // Register plugin
