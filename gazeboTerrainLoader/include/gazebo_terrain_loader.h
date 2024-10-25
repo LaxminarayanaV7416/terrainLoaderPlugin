@@ -39,7 +39,8 @@ namespace gazebo
         bool stopOnEveryTickExecution = false;
         transport::SubscriberPtr sub;
         msgs::Factory msg;
-        transport::NodePtr transport_node;  
+        transport::NodePtr transport_node; 
+        physics::WorldPtr world; 
         transport::PublisherPtr publisher;
         time_t seconds = time(NULL);
         struct PairHash
