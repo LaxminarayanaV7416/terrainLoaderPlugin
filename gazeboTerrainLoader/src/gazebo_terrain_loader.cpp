@@ -59,6 +59,8 @@ namespace gazebo
         if (this->already_spawned_blocks_map.find({int_x, int_y}) == this->already_spawned_blocks_map.end())
         {
           this->bringUpStaticBlockOf1Meter(int_x, int_y, z);
+          // remove from the file map such that memory will be saved
+          this->file_data_map.erase({int_x, int_y});
         }
         else
         {
@@ -87,6 +89,37 @@ namespace gazebo
     std::cout << "Added the already spawned block with key " << x_position << "," << y_position << std::endl;
   }
 
+  void GazeboTerrainLoaderPlugin::loadTheFileToMap()
+  {
+    std::ifstream file("/home/uav/Documents/terrainLoaderPlugin/trails/heightMask.csv");
+
+    if (!file.is_open())
+    {
+      std::cerr << "Could not open the file!" << std::endl;
+      return;
+    }
+
+    std::string line;
+    // Skip the header line if it exists
+    std::getline(file, line);
+
+    while (std::getline(file, line))
+    {
+      std::istringstream ss(line);
+      std::string x, y, z;
+
+      if (std::getline(ss, x, ',') && std::getline(ss, y, ',') && std::getline(ss, z, ','))
+      {
+        int int_x = std::stoi(x);
+        int int_y = std::stoi(y);
+        double double_z = std::stod(z);
+        this->file_data_map[{int_x, int_y}] = double_z; // Add to the map
+      }
+    }
+
+    file.close();
+  }
+
   void GazeboTerrainLoaderPlugin::onEveryTick(const common::UpdateInfo &_info)
   {
     // check if we stopped the every tick update execution
@@ -96,6 +129,7 @@ namespace gazebo
     }
     // as we not stopped execution lets keep on checking for the file
     // passing this section to see everything works fine as expected
+    this->loadTheFileToMap();
 
     // on successful completion now subscribe to the topic
     // transport::SubscriberPtr subscribe

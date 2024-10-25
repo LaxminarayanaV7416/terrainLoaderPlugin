@@ -10,12 +10,15 @@
 #include <map>
 #include <list>
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <tuple>
+#include <map>
+#include <unordered_map>
 
 namespace gazebo
 {
-
-    
-
     class GazeboTerrainLoaderPlugin : public WorldPlugin
     {
     public:
@@ -33,6 +36,7 @@ namespace gazebo
     private:
         void On_msg(ConstPosesStampedPtr &_msg);
         void bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position);
+        void loadTheFileToMap();
 
     private:
         event::ConnectionPtr gazebo_connection;
@@ -54,6 +58,7 @@ namespace gazebo
         };
         // defining the unordered_map for the reference to keep already spawned blocks
         std::unordered_map<std::pair<int, int>, double, PairHash> already_spawned_blocks_map;
+        std::unordered_map<std::pair<int, int>, double, PairHash> file_data_map;
     };
 
 } // namespace gazebo
