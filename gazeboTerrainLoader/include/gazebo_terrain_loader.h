@@ -19,20 +19,27 @@ namespace gazebo
     class GazeboTerrainLoaderPlugin : public WorldPlugin
     {
     public:
-        GazeboTerrainLoaderPlugin()
-        : WorldPlugin()
-        {}        
+        GazeboTerrainLoaderPlugin();
+        // : WorldPlugin(),
+        // transport_node(NULL)
+        // {}        
         
         virtual ~GazeboTerrainLoaderPlugin();
         void Load(physics::WorldPtr _model, sdf::ElementPtr _sdf) override;
 
-    private:
-        void On_msg(ConstPosesStampedPtr &_msg);
-        void bringUpStaticBlockof1Meter(int &x_position, int &y_position, double &z_position);
+    protected:
+        void onEveryTick(const common::UpdateInfo& /*_info*/);
 
     private:
+        void On_msg(ConstPosesStampedPtr &_msg);
+        void bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position);
+
+    private:
+        event::ConnectionPtr gazebo_connection;
+        bool stopOnEveryTickExecution = false;
         transport::SubscriberPtr sub;
         msgs::Factory msg;
+        transport::NodePtr transport_node;
         transport::PublisherPtr publisher;
         time_t seconds = time(NULL);
         struct PairHash
