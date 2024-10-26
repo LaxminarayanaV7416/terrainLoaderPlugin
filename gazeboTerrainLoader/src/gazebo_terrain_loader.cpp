@@ -7,8 +7,9 @@ namespace gazebo
   {
     printf("Subscriber Plugin Created!\n");
     // model to use
-    this->msg.set_sdf_filename("model://terrainLoaderBlock");
-      this->transport_node = NULL;
+    // this->msg.set_sdf_filename("model://terrainLoaderBlock");
+    // std::cout << "loaded SDF file is :" << this->msg.sdf() << std::endl;
+    this->transport_node = NULL;
   }
 
   GazeboTerrainLoaderPlugin::~GazeboTerrainLoaderPlugin()
@@ -46,6 +47,7 @@ namespace gazebo
       std::string msg_name = _msg->pose(i).name();
 
       // this is the drone pose
+      // TODO: Ignore the ground_plane scenario
       if (msg_name.find("::") == std::string::npos)
       {
         double x = _msg->pose(i).position().x();
@@ -58,34 +60,56 @@ namespace gazebo
         // before spawning check whether the spawned block is already part of the already spawned block
         if (this->already_spawned_blocks_map.find({int_x, int_y}) == this->already_spawned_blocks_map.end())
         {
+          std::cout << "DRONE POSE SPAWNING IS " << msg_name << std::endl;
           this->bringUpStaticBlockOf1Meter(int_x, int_y, z);
           // remove from the file map such that memory will be saved
           this->file_data_map.erase({int_x, int_y});
         }
-        else
-        {
-          if (tempSeconds > this->seconds)
-          {
-            this->seconds = tempSeconds;
-            std::cout << "Already Spawned so not showing again" << std::endl;
-          }
-        }
+        // else
+        // {
+        //   if (tempSeconds > this->seconds)
+        //   {
+        //     this->seconds = tempSeconds;
+        //     std::cout << "Already Spawned so not showing again" << std::endl;
+        //   }
+        // }
       }
     }
+  }
+
+  std::string GazeboTerrainLoaderPlugin::modifyXML(const std::string &xml, const std::string &newPose, const std::string &newSize)
+  {
+    // Regular expressions for matching the size and pose
+    std::regex sizeRegex(R"(<size>\s*[^<]*\s*</size>)");
+    std::regex poseRegex(R"(<pose>\s*[^<]*\s*</pose>)");
+
+    // Replace size
+    std::string modifiedXML = std::regex_replace(xml, sizeRegex, "<size>" + newSize + "</size>");
+
+    // Replace pose (assuming pose tag exists, otherwise handle accordingly)
+    modifiedXML = std::regex_replace(modifiedXML, poseRegex, "<pose>" + newPose + "</pose>");
+
+    return modifiedXML;
   }
 
   void GazeboTerrainLoaderPlugin::bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position)
   {
     // set model pose
-    msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
+    // msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
+
+    std::string newPose = std::to_string(x_position) + " " + std::to_string(y_position) + " 0 0 0 0"; // Example new pose
+    std::string newSize = "1 1 " + std::to_string(z_position);                                        // Example new size
 
     // // update the string to set the size and pose
-    // std::string temporaryModelSDF = this->updateSDF(std::string(this->MODEL_SDF_STRING), x_position, y_position, z_position);
+    std::string temporaryModelSDF = this->modifyXML(this->xml, newPose, newSize);
+    // this->modelSDF.Clear();
+    // std::cout << " PRINTING XML >>>>>>>>>>>>>>>>>> " << temporaryModelSDF << std::endl;
     // this->modelSDF.SetFromString(temporaryModelSDF);
     // this->world->InsertModelSDF(this->modelSDF);
+    this->world->InsertModelString(temporaryModelSDF);
 
     // Send the message
-    this->publisher->Publish(this->msg);
+    // this->publisher->Publish(this->msg);
 
     std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
 
