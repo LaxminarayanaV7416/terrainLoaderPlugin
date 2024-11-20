@@ -32,6 +32,7 @@
 namespace gazebo {
 // Default values
     static const std::string kDefaultNamespace = "";
+    static const std::string kWindDataFile = "/home/uav/Documents/terrainLoaderPlugin/trails/wisp_50.csv";
     static const std::string kDefaultFrameId = "world";
 
     static constexpr double kDefaultWindVelocityMean = 0.0;
@@ -67,6 +68,7 @@ namespace gazebo {
                   wind_direction_variance_(kDefaultWindDirectionVariance),
                   wind_gust_direction_variance_(kDefaultWindGustDirectionVariance),
                   frame_id_(kDefaultFrameId),
+                  windDataFile(kWindDataFile),
                   pub_interval_(0.5),
                   node_handle_(NULL) {}
 
@@ -98,6 +100,9 @@ namespace gazebo {
 
     private:
         /// \brief Pointer to the update event connection.
+
+        std::string windDataFile;
+
         event::ConnectionPtr update_connection_;
         event::ConnectionPtr retry_load_connection_;
         std::unique_ptr<WindDataProcessor::WindDataProcessor> windProcessor;

@@ -6,18 +6,5 @@ export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH:/home/uav/Documents/terrainLoaderP
 export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/uav/Documents/terrainLoaderPlugin/models
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/uav/Documents/terrainLoaderPlugin/build/lib
 
-gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/terrainLoader.world --verbose
 
 gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/windy.world --verbose
-
-gzclient --verbose
-
-gz model --verbose --spawn-file="/home/uav/Documents/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/typhoon_h480/typhoon_h480.sdf" --model-name=typhoon -x 0 -y 0 -z 1.2
-
-
-
-NOTES:
---------------
-1. I will initially use the event::Events::ConnectWorldUpdateBegin which basically acts like a while true loop (this 
-event will be triggered on every tick of world update), so I will use this to check whether the file exists or not
-if not exists I will 

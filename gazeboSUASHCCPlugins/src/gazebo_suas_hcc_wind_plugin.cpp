@@ -35,7 +35,7 @@ namespace gazebo {
         sdf_ = sdf;  // Store the SDF pointer
 
         // Load wind data file
-        const std::string windDataFile = sdf->Get<std::string>("windDataFile", "wisp_50.csv").first;
+        getSdfParam<std::string>(sdf, "windDataFile", windDataFile, windDataFile);
         windProcessor = std::make_unique<WindDataProcessor::WindDataProcessor>(windDataFile);
 
         // Detect and load models

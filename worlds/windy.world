@@ -30,6 +30,7 @@
       <windGustDirectionMean>1 0 0</windGustDirectionMean>
       <windGustDirectionVariance>0</windGustDirectionVariance>
       <windPubTopic>world_wind</windPubTopic>
+      <windDataFile>/home/uav/Documents/terrainLoaderPlugin/trails/wisp_50.csv</windDataFile>
     </plugin>
 
     
