@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 Laxminarayana Vadnala, SLU, St. Louis, MO, USA
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "gazebo_terrain_loader.h"
 
 namespace gazebo
@@ -9,6 +25,7 @@ namespace gazebo
     // model to use
     // this->msg.set_sdf_filename("model://terrainLoaderBlock");
     // std::cout << "loaded SDF file is :" << this->msg.sdf() << std::endl;
+    this->terrainLoaderFilePath = DefaultFilePath;
     this->transport_node = NULL;
   }
 
@@ -29,6 +46,8 @@ namespace gazebo
 
     std::map<std::string, std::list<std::string>> topicsList = transport::getAdvertisedTopics();
     std::cout << "topic number" << topicsList.size() << std::endl;
+
+    getSdfParam<std::string>(_sdf, "", terrainLoaderFilePath, terrainLoaderFilePath);
 
     this->gazebo_connection = event::Events::ConnectWorldUpdateBegin(boost::bind(&GazeboTerrainLoaderPlugin::onEveryTick, this, _1));
 
@@ -114,13 +133,13 @@ namespace gazebo
     std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
 
     // add the already spawned block here
-    this->already_spawned_blocks_map[{x_position, y_position}] = z_position;
+    this->already_spawned_blocks_map[{x_position, y_position}] = true;
     std::cout << "Added the already spawned block with key " << x_position << "," << y_position << std::endl;
   }
 
   void GazeboTerrainLoaderPlugin::loadTheFileToMap()
   {
-    std::ifstream file("/home/uav/Documents/terrainLoaderPlugin/trails/heightMask.csv");
+    std::ifstream file(terrainLoaderFilePath);
 
     if (!file.is_open())
     {
