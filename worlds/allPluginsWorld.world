@@ -9,9 +9,6 @@
     <include>
       <uri>model://ground_plane</uri>
     </include>
-    <include>
-      <uri>model://asphalt_plane</uri>
-    </include>
 
     <!-- Wind plugin information -->
     <plugin name='wind_plugin' filename='libgazebo_suas_hcc_wind_plugin.so'>

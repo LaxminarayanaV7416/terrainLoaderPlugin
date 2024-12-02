@@ -7,4 +7,8 @@ export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH:/home/uav/Documents/terrainLoaderPlu
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/uav/Documents/terrainLoaderPlugin/build/lib
 
 
+# gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/terrainLoader.world --verbose
+
 gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/windy.world --verbose
+
+# gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/empty.world --verbose

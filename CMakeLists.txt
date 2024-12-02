@@ -55,18 +55,20 @@ set_target_properties(gazebo_terrain_loader_plugin PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 
-file(GLOB WIND_DATE_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/gazeboSUASHCCPlugins/src/wind_data_processor.cpp
-)
-add_library(wind_data_processor SHARED ${WIND_DATE_SOURCES})
+# file(GLOB WIND_DATE_SOURCES
+#     ${CMAKE_CURRENT_SOURCE_DIR}/gazeboSUASHCCPlugins/src/wind_data_processor.cpp
+# )
+# add_library(wind_data_processor SHARED ${WIND_DATE_SOURCES})
 
 file(GLOB WIND_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/gazeboSUASHCCPlugins/src/gazebo_suas_hcc_wind_plugin.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gazeboSUASHCCPlugins/src/gazebo_new_wind_plugin.cpp
 )
 # Add the library (shared object)
-add_library(gazebo_suas_hcc_wind_plugin SHARED ${WIND_SOURCES})
-target_link_libraries(gazebo_suas_hcc_wind_plugin wind_data_processor)
-set_target_properties(gazebo_suas_hcc_wind_plugin PROPERTIES
+add_library(gazebo_new_wind_plugin SHARED ${WIND_SOURCES})
+
+target_link_libraries(gazebo_new_wind_plugin physics_msgs vector_msgs)
+
+set_target_properties(gazebo_new_wind_plugin PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
 )
 
