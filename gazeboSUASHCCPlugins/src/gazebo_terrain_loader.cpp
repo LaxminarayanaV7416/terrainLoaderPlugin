@@ -72,15 +72,27 @@ namespace gazebo
         double x = _msg->pose(i).position().x();
         double y = _msg->pose(i).position().y();
         double z = _msg->pose(i).position().z();
+        double center_dertmination = 0;
 
         int int_x = (int)x;
         int int_y = (int)y;
 
+        if (this->file_data_map.find({int_x, int_y}) != this->file_data_map.end()){
+          double temp_z = this->file_data_map.at({int_x, int_y});
+          if(temp_z<0){
+            z = temp_z * -1;
+            center_dertmination = temp_z/2;
+          } else {
+            z = temp_z;
+            center_dertmination = temp_z/2;
+          }
+        }
+
         // before spawning check whether the spawned block is already part of the already spawned block
         if (this->already_spawned_blocks_map.find({int_x, int_y}) == this->already_spawned_blocks_map.end())
         {
-          std::cout << "DRONE POSE SPAWNING IS " << msg_name << std::endl;
-          this->bringUpStaticBlockOf1Meter(int_x, int_y, z);
+          std::cout << "DRONE POSE SPAWNING IS " << int_x << "," << int_y << ":::::: " << z << " Center determiantion " << center_dertmination << std::endl;
+          this->bringUpStaticBlockOf1Meter(int_x, int_y, z, center_dertmination);
           // remove from the file map such that memory will be saved
           this->file_data_map.erase({int_x, int_y});
         }
@@ -111,12 +123,12 @@ namespace gazebo
     return modifiedXML;
   }
 
-  void GazeboTerrainLoaderPlugin::bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position)
+  void GazeboTerrainLoaderPlugin::bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position, double &center_dertmination)
   {
     // set model pose
     // msgs::Set(this->msg.mutable_pose(), ignition::math::Pose3d(x_position, y_position, 0, 0, 0, 0));
 
-    std::string newPose = std::to_string(x_position) + " " + std::to_string(y_position) + " 0 0 0 0"; // Example new pose
+    std::string newPose = std::to_string(x_position) + " " + std::to_string(y_position) + " " + std::to_string(center_dertmination) + " 0 0 0"; // Example new pose
     std::string newSize = "1 1 " + std::to_string(z_position);                                        // Example new size
 
     // // update the string to set the size and pose
@@ -130,11 +142,11 @@ namespace gazebo
     // Send the message
     // this->publisher->Publish(this->msg);
 
-    std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
+    // std::cout << "spawning the plane at position " << x_position << " - Xposition and " << y_position << " - Yposition!" << std::endl;
 
     // add the already spawned block here
     this->already_spawned_blocks_map[{x_position, y_position}] = true;
-    std::cout << "Added the already spawned block with key " << x_position << "," << y_position << std::endl;
+    // std::cout << "Added the already spawned block with key " << x_position << "," << y_position << std::endl;
   }
 
   void GazeboTerrainLoaderPlugin::loadTheFileToMap()

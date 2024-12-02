@@ -23,7 +23,6 @@
 #include <gazebo/transport/transport.hh>
 #include <gazebo/msgs/msgs.hh>
 #include <time.h>
-#include <map>
 #include <list>
 #include <iostream>
 #include <fstream>
@@ -53,7 +52,7 @@ namespace gazebo
 
     private:
         void On_msg(ConstPosesStampedPtr &_msg);
-        void bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position);
+        void bringUpStaticBlockOf1Meter(int &x_position, int &y_position, double &z_position, double &center_dertmination);
         void loadTheFileToMap();
         std::string modifyXML(const std::string& xml, const std::string& newPose, const std::string& newSize);
 
