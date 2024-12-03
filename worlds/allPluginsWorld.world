@@ -11,7 +11,7 @@
     </include>
 
     <!-- Wind plugin information -->
-    <plugin name='wind_plugin' filename='libgazebo_suas_hcc_wind_plugin.so'>
+    <plugin name='wind_plugin' filename='libgazebo_new_wind_plugin.so'>
       <frameId>base_link</frameId>
       <robotNamespace/>
       <windVelocityMean>4.0</windVelocityMean>
@@ -27,7 +27,7 @@
       <windGustDirectionMean>1 0 0</windGustDirectionMean>
       <windGustDirectionVariance>0</windGustDirectionVariance>
       <windPubTopic>world_wind</windPubTopic>
-      <windDataFile>/home/uav/Documents/terrainLoaderPlugin/trails/wisp_50.csv</windDataFile>
+      <windDataFile>/home/uav/Documents/terrainLoaderPlugin/trails/windDataPrecisionCoordinates.csv</windDataFile>
     </plugin>
 
     <!-- Terrain loader plugin information -->

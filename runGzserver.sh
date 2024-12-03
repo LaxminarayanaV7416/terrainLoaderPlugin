@@ -9,6 +9,8 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/uav/Documents/terrainLoaderPlugin/
 
 # gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/terrainLoader.world --verbose
 
+# gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/allPluginsWorld.world --verbose
+
 gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/windy.world --verbose
 
 # gzserver /home/uav/Documents/terrainLoaderPlugin/worlds/empty.world --verbose

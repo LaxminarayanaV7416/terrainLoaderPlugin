@@ -172,46 +172,47 @@ namespace gazebo
 
         for (int i = 0; i < _msg->pose_size(); i++)
         {
-        std::string msg_name = _msg->pose(i).name();
+            std::string msg_name = _msg->pose(i).name();
 
-        // this is the drone pose
-        // TODO: Ignore the ground_plane scenario
-        if (msg_name.find("::") == std::string::npos)
-        {
-            double x = this->roundToSixDecimals(_msg->pose(i).position().x());
-            double y = this->roundToSixDecimals(_msg->pose(i).position().y());
-            double z = this->roundToSixDecimals(_msg->pose(i).position().z());
-            double u,v,w = 0;
+            // this is the drone pose
+            // TODO: Ignore the ground_plane scenario
+            if (msg_name.find("::") == std::string::npos)
+            {
+                double x = this->roundToSixDecimals(_msg->pose(i).position().x());
+                double y = this->roundToSixDecimals(_msg->pose(i).position().y());
+                double z = this->roundToSixDecimals(_msg->pose(i).position().z());
+                double u,v,w = 0;
 
-            std::cout << x << ", " << y << ", " << z << "::<" << u << ">, <" << v << ">, <" << w << ">" << std::endl;
+                int int_x = (int)x;
+                int int_y = (int)y;
+                int int_z = (int)z;
 
-            int int_x = (int)x;
-            int int_y = (int)y;
-            int int_z = (int)z;
+                if(this->wind_file_hash_map.find({x, y, z})!= this->wind_file_hash_map.end()){
+                    std::tuple<double, double, double> value = this->wind_file_hash_map.at({x, y, z});
+                    u = std::get<0>(value);
+                    v = std::get<1>(value);
+                    w = std::get<2>(value);
+                } else {
+                    // key not found search in int dictionary
+                    u = 10;
+                    v = 0;
+                    w = 0; 
+                }
 
-            if(this->wind_file_hash_map.find({x, y, z})!= this->wind_file_hash_map.end()){
-                 std::tuple<double, double, double> value = this->wind_file_hash_map.at({x, y, z});
-                 u = std::get<0>(value);
-                 v = std::get<1>(value);
-                 w = std::get<2>(value);
-            } else {
-                // key not found search in int dictionary
+                gazebo::msgs::Vector3d* wind_v = new gazebo::msgs::Vector3d();
+                wind_v->set_x(u);
+                wind_v->set_y(v);
+                wind_v->set_z(w);
+
+                this->wind_msg.set_frame_id(this->frame_id_);
+                this->wind_msg.set_time_usec(now.Double() * 1e6);
+                this->wind_msg.set_allocated_velocity(wind_v);
+
+                this->wind_pub_->Publish(this->wind_msg);
+
+                std::cout << x << ", " << y << ", " << z << "::<" << u << ">, <" << v << ">, <" << w << ">" << std::endl;
+
             }
-
-            gazebo::msgs::Vector3d* wind_v = new gazebo::msgs::Vector3d();
-            wind_v->set_x(u);
-            wind_v->set_y(u);
-            wind_v->set_z(u);
-
-            this->wind_msg.set_frame_id(this->frame_id_);
-            this->wind_msg.set_time_usec(now.Double() * 1e6);
-            this->wind_msg.set_allocated_velocity(wind_v);
-
-            this->wind_pub_->Publish(this->wind_msg);
-
-            std::cout << x << ", " << y << ", " << z << "::<" << u << ">, <" << v << ">, <" << w << ">" << std::endl;
-
-        }
         }
     }
 
